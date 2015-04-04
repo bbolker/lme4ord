@@ -29,6 +29,8 @@ findFromNode <- function(to, edge) {
     newTo <- edge[edge[, 2] == lastTo, ][1]
     if(is.na(newTo)) return(to)
     findFromNode(c(to, newTo), edge)
+}
+
 findPathFromNode <- function(node, edge) {
     lastNode <- node[length(node)]
     newNode <- edge[edge[, 2] == lastNode, ][1]
