@@ -22,6 +22,151 @@ library(pryr)
 library(reo)
 ```
 
+#### Edge-based phylogenetic GLMMs
+
+Acknowledgements:  Ben Bolker, Jarrod Hadfield, and Guillaume Blanchet
+have provided extremely useful discussions.
+
+Here's some new stuff that I'm excited about, mostly because it seems
+to solve a huge computational cost problem with Ives and Helmus style
+PGLMMs, and just because it is interesting.  The idea is to avoid all
+of the computationally expensive linear algebra involved when dealing
+with dense phylogenetic covariance matrices.  Instead, from an idea
+Ben and I had after a discussion with Jerrod Hadfield, we have a
+random effect for each edge.  These effects act on all species that
+descend from the particular edge in question.
+
+Here's a simple simulated example with twenty sites and ten species,
+but there is absolutely no problem with scaling this up (that's one of
+the main points).  This example also shows off the nice modularized
+fitting in `lme4ord`.
+
+
+```r
+td <- simTestPhyloDat(1, n = 100, m = 5, power = 0.5,
+                      y ~ 1 + (1 | species),
+                      covarSim = 1,
+                      fixefSim = 1)
+```
+
+```
+## Note: method with signature 'dsparseMatrix#dsparseMatrix' chosen for function 'kronecker',
+##  target signature 'dgTMatrix#dgCMatrix'.
+##  "TsparseMatrix#sparseMatrix" would also be valid
+```
+
+```r
+color2D.matplot(td$dl$y, xlab = "species", ylab = "sites",
+                main = "Occurrence")
+```
+
+![plot of chunk unnamed-chunk-1](inst/README/figure/unnamed-chunk-1-1.png) 
+
+```r
+plot(td$ph)
+edgelabels()
+```
+
+![plot of chunk unnamed-chunk-1](inst/README/figure/unnamed-chunk-1-2.png) 
+
+We find an indicator matrix giving the relationships between the edges
+(plotted above on the phylogeny) and the tips (also plotted).
+
+
+```r
+(edgeMat <- edgeTipIndicator(td$ph))
+```
+
+```
+##      t2 t5 t3 t4 t1
+## [1,]  1  0  0  0  0
+## [2,]  0  1  1  1  1
+## [3,]  0  1  1  1  0
+## [4,]  0  1  0  0  0
+## [5,]  0  0  1  1  0
+## [6,]  0  0  1  0  0
+## [7,]  0  0  0  1  0
+## [8,]  0  0  0  0  1
+```
+
+Now we add this matrix to the data.
+
+
+```r
+(mod <- glmerc(y ~ 1 + (1 | species), as.data.frame(td$dl), binomial,
+               strList = list(species = edgeMat)))
+```
+
+```
+## 
+## Generalized linear mixed model
+## with covariance amongst grouping factor levels
+## ----------------------------------------------
+## 
+## Fixed effects
+## -------------
+## 
+##              Estimate Std. Error
+## (Intercept) 0.6367757   1.158189
+## 
+## 
+## Random effects (co)variance
+## ---------------------------
+## 
+## $species
+##             (Intercept)
+## (Intercept)     2.09553
+```
+
+And here are some plots of the output, including the full covariance
+matrix for the entire system and the phylogeny with the estimated edge
+effects.
+
+
+```r
+rho <- environment(mod$dfun)
+with(rho$pp, image(crossprod(Lambdat %*% Zt)))
+```
+
+![plot of chunk unnamed-chunk-4](inst/README/figure/unnamed-chunk-4-1.png) 
+
+
+```r
+plot(td$ph)
+edgelabels(round(rho$pp$b(1), 2), cex = 1)
+```
+
+![plot of chunk unnamed-chunk-5](inst/README/figure/unnamed-chunk-5-1.png) 
+
+This plot gives the estimated phylogenetic effects on community
+structure on each branch.  The link-scale effects for each species are
+simply the sums of the values on the branches leading to them.
+
+And it scales well!  Here's an example with 100 sites and 500 species.
+
+
+```r
+system.time(mod <- glmerc(y ~ 1 + (1 | species),
+                          as.data.frame(td$dl), binomial,
+                          strList = list(species = edgeMat)))
+```
+
+```
+##    user  system elapsed 
+##  31.997   3.206  35.205
+```
+
+`glmerc` (below) can't do that!  I think the reason for the speed is
+the following sparsity pattern, which gives the numbers of species
+'shared' by pairs of edges.
+
+
+```r
+image(as(tcrossprod(edgeMat), "sparseMatrix"))
+```
+
+![plot of chunk unnamed-chunk-6](inst/README/figure/unnamed-chunk-6-1.png) 
+
 #### phylogenetic generalized linear mixed models!
 
 Acknowledgements:  Ben Bolker, Tony Ives, and Guillaume Blanchet have 
@@ -151,7 +296,7 @@ module of the `glmerc` function.
 
 ```r
 form <- y ~ x * z + (x | species)
-parsedForm <- glmercFormula(form, df, covList = covList)
+parsedForm <- glmercFormula(form, df, covList = covList, strList = list())
 ```
 
 Set the covariance parameters to something more interesting (i.e. with

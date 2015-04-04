@@ -8,7 +8,7 @@
 ##' relationship between tips and the edges associated with their
 ##' history.
 ##' 
-##' @param to vector of node indices
+##' @param node vector of node indices
 ##' @param edge phylogenetic edge matrix
 ##' @param path vector giving the path from a node back in time
 ##' through its ancestor nodes (output of \code{findFromNode})
@@ -29,6 +29,12 @@ findFromNode <- function(to, edge) {
     newTo <- edge[edge[, 2] == lastTo, ][1]
     if(is.na(newTo)) return(to)
     findFromNode(c(to, newTo), edge)
+findPathFromNode <- function(node, edge) {
+    lastNode <- node[length(node)]
+    newNode <- edge[edge[, 2] == lastNode, ][1]
+    if(is.na(newNode)) return(node)
+    findPathFromNode(c(node, newNode), edge)
+>>>>>>> upstream/master
 }
 ##' @rdname edgeTipIndicator
 ##' @param scale scaling factor for edges (i.e., vector of branch lengths)
@@ -38,6 +44,7 @@ findEdgesFromPath <- function(path, edge, scale=1) {
     col2 <- edge[, 2] %in% path[-length(path)]
     (col1 & col2)*scale
 }
+##' @param ... not used
 ##' @rdname edgeTipIndicator
 ##' @export
 edgeTipIndicator <- function(object, ...) {
@@ -48,12 +55,13 @@ edgeTipIndicator <- function(object, ...) {
 edgeTipIndicator.default <- function(object, ...) {
     edgeTipIndicator(as.matrix(object))
 }
+##' @param ntip number of tips
 ##' @rdname edgeTipIndicator
 ##' @export
 edgeTipIndicator.matrix <- function(object, ntip, scale=1, ...) {
     if(ncol(object) != 2L) stop("not an edge matrix")
-    sapply(lapply(1:ntip, findFromNode, object),
-           findEdgesFromPath, object, scale)
+    sapply(lapply(1:ntip, findPathFromNode, object),
+           findEdgesFromPath, object)
 }
 ##' @rdname edgeTipIndicator
 ##' @export

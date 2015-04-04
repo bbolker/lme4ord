@@ -5,7 +5,8 @@
 \title{Generalized linear mixed model with custom covariance over grouping factor levels}
 \usage{
 glmerc(formula, data = NULL, family = binomial, covList = list(),
-  tileCov = TRUE, optControl = list(iprint = 0L), ...)
+  strList = list(), tileCov = TRUE, giveCsparse = TRUE,
+  optControl = list(iprint = 0L), ...)
 
 print.glmerc(x, ...)
 }
@@ -16,15 +17,25 @@ print.glmerc(x, ...)
 
 \item{family}{family}
 
-\item{covList}{covList}
+\item{covList}{list of covariance matrices tagged by the names of
+grouping factors}
+
+\item{strList}{list of structure matrices tagged by the names of
+grouping factors}
 
 \item{tileCov}{in kronecker products, should the covariance
 matrices in \code{covList} be tiled (\code{tileCov = TRUE}) or
 distributed (\code{tileCov = FALSE})?}
 
+\item{giveCsparse}{use compressed-form \code{CsparseMatrix}
+representations (\code{TRUE}), or triplet-form
+\code{TsparseMatrix} representations (\code{FALSE})?}
+
 \item{optControl}{optControl}
 
 \item{...}{...}
+
+\item{x}{\code{glmerc} object}
 }
 \description{
 When fitting generalized linear mixed model with
