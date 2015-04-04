@@ -34,7 +34,6 @@ findPathFromNode <- function(node, edge) {
     newNode <- edge[edge[, 2] == lastNode, ][1]
     if(is.na(newNode)) return(node)
     findPathFromNode(c(node, newNode), edge)
->>>>>>> upstream/master
 }
 ##' @rdname edgeTipIndicator
 ##' @param scale scaling factor for edges (i.e., vector of branch lengths)
