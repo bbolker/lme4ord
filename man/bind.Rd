@@ -2,72 +2,68 @@
 \name{bind}
 \alias{.bind}
 \alias{bind}
-\alias{rep.repSparse}
-\title{Row, column, and block-diagonal binding for repeated sparse
+\alias{rep.strucMatrix}
+\title{Row, column, and block-diagonal binding for structured sparse
 matrices}
 \usage{
-bind(..., type = c("row", "col", "diag"), saveComponents = TRUE)
+bind(..., type = c("row", "col", "diag"))
 
 .bind(mats, type = c("row", "col", "diag"))
 
-\method{rep}{repSparse}(x, times, type = c("row", "col", "diag"), ...)
+\method{rep}{strucMatrix}(x, times, type = c("row", "col", "diag"),
+  repVals = FALSE, ...)
 }
 \arguments{
-\item{...}{list of \code{repSparse} objects (but not used for
-\code{rep.repSparse})}
+\item{...}{list of \code{strucMatrix} objects (but not used for
+\code{rep.strucMatrix})}
 
 \item{type}{type of binding}
 
-\item{saveComponents}{should component matrices be saved?}
+\item{mats}{list of \code{strucMatrix} matrix objects}
 
-\item{mats}{list of \code{repSparse} matrix objects}
-
-\item{x}{\code{repSparse} object}
+\item{x}{\code{strucMatrix} object}
 
 \item{times}{like \code{rep}}
+
+\item{repVals}{should the unique values (\code{x$vals}) be
+repeated too?  in other words, do you want to have each replicate
+to have guaranteed identical values (\code{FALSE}, the default),
+or do you want each replicate to be settable to it's own values
+(\code{TRUE})?}
 }
 \description{
-Row, column, and block-diagonal binding for repeated sparse
+Row, column, and block-diagonal binding for structured sparse
 matrices
 
-Repeat repeated sparse matrix
+Repeat structured sparse matrix
+}
+\examples{
+set.seed(1)
+X <- strucMatrix(c(1, 2, 1, 2), c(1, 1, 2, 2), 1:4, rnorm(4))
+Y <- strucMatrix(c(1, 2, 1), c(1, 1, 2), 1:3, rnorm(3))
+Z <- strucMatrix(c(1, 2), c(1, 2), 1:2, rnorm(2))
+(bindDiag <- bind(X, Y, Z, type = "diag"))
+(bindRow  <- bind(X, Y, Z, type = "row"))
+(bindCol  <- bind(X, Y, Z, type = "col"))
+set.seed(1)
+X <- strucMatrix(c(1, 2, 1, 2), c(1, 1, 2, 2), 1:4, rnorm(4))
+Y <- strucMatrix(c(1, 2, 1), c(1, 1, 2), 1:3, rnorm(3))
+Z <- strucMatrix(c(1, 2), c(1, 2), 1:2, rnorm(2))
+(repDiag <- rep(X, 3, type = "diag"))
+(repRow  <- rep(X, 3, type = "row"))
+(repCol  <- rep(X, 3, type = "col"))
 }
 \seealso{
-Other repSparseTopics: \code{\link{as}}, \code{\link{as}},
-  \code{\link{as}}, \code{\link{as}}, \code{\link{as}},
-  \code{\link{as.data.frame.repSparse}},
-  \code{\link{as.data.table.repSparse}},
-  \code{\link{as.matrix.repSparse}},
-  \code{\link{as.repSparse}},
-  \code{\link{as.repSparse.dsparseMatrix}},
-  \code{\link{as.repSparse.factor}},
-  \code{\link{as.repSparse.matrix}},
-  \code{\link{as.repSparse.repSparse}};
-  \code{\link{chol.repSparse}},
-  \code{\link{chol.repSparseCompSymm}},
-  \code{\link{chol.repSparseOneOffDiag}};
-  \code{\link{dim.repSparse}},
-  \code{\link{image.repSparse}},
-  \code{\link{print.repSparse}},
-  \code{\link{repSparse-class}},
-  \code{\link{sort.repSparse}}, \code{\link{t.repSparse}},
-  \code{\link{update.repSparse}}; \code{\link{getInit}},
-  \code{\link{getInit.default}},
-  \code{\link{getInit.function}},
-  \code{\link{getInit.repSparse}}, \code{\link{setInit}},
-  \code{\link{setInit.default}},
-  \code{\link{setInit.function}},
-  \code{\link{setInit.repSparse}}; \code{\link{ind2point}},
-  \code{\link{point2ind}}; \code{\link{kr}},
-  \code{\link{kron}}, \code{\link{mmult}},
-  \code{\link{rowWiseCombination}};
-  \code{\link{mkCholOneOffDiagTrans}},
-  \code{\link{mkIdentityTrans}}, \code{\link{mkListTrans}},
-  \code{\link{mkOuterTrans}}; \code{\link{rRepSparse}},
-  \code{\link{repSparseCompSymm}},
-  \code{\link{repSparseDiag}},
-  \code{\link{repSparseIdent}},
-  \code{\link{repSparseOneOffDiag}};
-  \code{\link{repSparse}}
+Other matrixCombining: \code{\link{kr}},
+  \code{\link{kron}},
+  \code{\link{kronecker,strucMatrix,strucMatrix-method}};
+  \code{\link{strucMatrixRowSubset}},
+  \code{\link{subset.strucMatrix}}
+
+Other matrixCombining: \code{\link{kr}},
+  \code{\link{kron}},
+  \code{\link{kronecker,strucMatrix,strucMatrix-method}};
+  \code{\link{strucMatrixRowSubset}},
+  \code{\link{subset.strucMatrix}}
 }
 

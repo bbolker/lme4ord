@@ -20,45 +20,11 @@ ind2point(ind, maxInd, fillNA = TRUE)
 in \code{Matrix} package)?}
 }
 \description{
-Changing sparse format
-}
-\seealso{
-Other repSparseTopics: \code{\link{.bind}},
-  \code{\link{bind}}, \code{\link{rep.repSparse}};
-  \code{\link{as}}, \code{\link{as}}, \code{\link{as}},
-  \code{\link{as}}, \code{\link{as}},
-  \code{\link{as.data.frame.repSparse}},
-  \code{\link{as.data.table.repSparse}},
-  \code{\link{as.matrix.repSparse}},
-  \code{\link{as.repSparse}},
-  \code{\link{as.repSparse.dsparseMatrix}},
-  \code{\link{as.repSparse.factor}},
-  \code{\link{as.repSparse.matrix}},
-  \code{\link{as.repSparse.repSparse}};
-  \code{\link{chol.repSparse}},
-  \code{\link{chol.repSparseCompSymm}},
-  \code{\link{chol.repSparseOneOffDiag}};
-  \code{\link{dim.repSparse}},
-  \code{\link{image.repSparse}},
-  \code{\link{print.repSparse}},
-  \code{\link{repSparse-class}},
-  \code{\link{sort.repSparse}}, \code{\link{t.repSparse}},
-  \code{\link{update.repSparse}}; \code{\link{getInit}},
-  \code{\link{getInit.default}},
-  \code{\link{getInit.function}},
-  \code{\link{getInit.repSparse}}, \code{\link{setInit}},
-  \code{\link{setInit.default}},
-  \code{\link{setInit.function}},
-  \code{\link{setInit.repSparse}}; \code{\link{kr}},
-  \code{\link{kron}}, \code{\link{mmult}},
-  \code{\link{rowWiseCombination}};
-  \code{\link{mkCholOneOffDiagTrans}},
-  \code{\link{mkIdentityTrans}}, \code{\link{mkListTrans}},
-  \code{\link{mkOuterTrans}}; \code{\link{rRepSparse}},
-  \code{\link{repSparseCompSymm}},
-  \code{\link{repSparseDiag}},
-  \code{\link{repSparseIdent}},
-  \code{\link{repSparseOneOffDiag}};
-  \code{\link{repSparse}}
+\code{point2ind} takes a vector of column pointers, as used in
+sparse matrices of class \code{dgCMatrix}, and returns a vector of
+column indices, as used in sparse matrices of class
+\code{dgTMatrix}.  \code{ind2point} is the approximate inverse of
+\code{point2ind}.  See \code{\link{sparseMatrix}} for more
+information about these conversions.
 }
 

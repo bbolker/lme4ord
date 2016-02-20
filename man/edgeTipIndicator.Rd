@@ -2,10 +2,13 @@
 \name{findPathFromNode}
 \alias{edgeTipIndicator}
 \alias{edgeTipIndicator.default}
+\alias{edgeTipIndicator.hclust}
 \alias{edgeTipIndicator.matrix}
+\alias{edgeTipIndicator.mst}
 \alias{edgeTipIndicator.phylo}
 \alias{findEdgesFromPath}
 \alias{findPathFromNode}
+\alias{reorderPhylo}
 \title{Relationships between tips and edges}
 \usage{
 findPathFromNode(node, edge)
@@ -16,9 +19,15 @@ edgeTipIndicator(object, ...)
 
 \method{edgeTipIndicator}{default}(object, ...)
 
-\method{edgeTipIndicator}{matrix}(object, ntip, scale = 1, ...)
+\method{edgeTipIndicator}{matrix}(object, ntip, scale = NULL, ...)
 
 \method{edgeTipIndicator}{phylo}(object, ...)
+
+\method{edgeTipIndicator}{hclust}(object, ...)
+
+\method{edgeTipIndicator}{mst}(object, ...)
+
+reorderPhylo(object, ...)
 }
 \arguments{
 \item{node}{vector of node indices}
@@ -43,17 +52,24 @@ path from a node back in time through its ancestor nodes.
 indicating the edges associated with a particular path.
 \code{edgeTipIndicator} returns a \code{logical} matrix giving the
 relationship between tips and the edges associated with their
-history.
+history.  \code{reorderPhylo} is a convenience function for
+ordering the edges of a \code{phylo} object in a way that makes it
+easier to build edge-based phylogenetic models.
 }
 \examples{
 set.seed(1)
-phy <- rtree(5)
-plot(phy)
-edgelabels()
-edgeTipIndicator(phy)
-(ee <- edgeTipIndicator(phy))
-if (require(Matrix)) {
-   image(Matrix(ee),sub="",xlab="tips",ylab="branches")
+if (require("ape")) {
+   phy <- rtree(5)
+   plot(phy)
+   edgelabels()
+   edgeTipIndicator(phy)
+   (ee <- edgeTipIndicator(phy))
+   if (require("Matrix")) {
+       image(Matrix(ee),sub="",xlab="tips",ylab="branches")
+   }
 }
+}
+\seealso{
+\code{\link{reorder.phylo}}
 }
 

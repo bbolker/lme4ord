@@ -3,9 +3,11 @@
 \alias{mkGeneralGlmerDevfun}
 \title{Make a general (Laplace) glmer deviance function}
 \usage{
-mkGeneralGlmerDevfun(y, X, Zt, Lambdat, weights, offset, initPars, parInds,
-  mapToCovFact, mapToModMat, family = binomial(), tolPwrss = 1e-06,
-  verbose = 0L, pureR = FALSE)
+mkGeneralGlmerDevfun(y, X, Zt, Lambdat, weights = NULL, offset = NULL,
+  etastart = NULL, mustart = NULL, devfunEnv, initPars, parInds,
+  mapToCovFact = NULL, mapToModMat = NULL, mapToWeights = NULL,
+  penFixef = NULL, penCovar = NULL, penLoads = NULL, family,
+  tolPwrss = 1e-06, maxit = 30, verbose = 0L, Lind = NULL)
 }
 \arguments{
 \item{y}{response vector}
@@ -19,6 +21,11 @@ mkGeneralGlmerDevfun(y, X, Zt, Lambdat, weights, offset, initPars, parInds,
 \item{weights}{prior weights}
 
 \item{offset}{known additive offsets}
+
+\item{etastart,mustart}{starting values for linear predictor
+(\code{etastart}) or mean (\code{mustart})}
+
+\item{devfunEnv}{environment of the returned deviance function}
 
 \item{initPars}{initial values for the parameter vector}
 
@@ -35,6 +42,12 @@ and returning the values of the non-zero elements of
 returning the values of the non-zero elements of \code{Zt}
 (i.e. the \code{x} slot of \code{Zt})}
 
+\item{mapToWeights}{function taking the \code{weigh} parameters}
+
+\item{penFixef,penCovar,penLoads}{optional functions of each
+parameter type, returning a scalar penalty for the deviance
+function}
+
 \item{family}{\code{\link{family}}}
 
 \item{tolPwrss}{tolerance for penalized weighted residual sum of
@@ -42,8 +55,10 @@ squares}
 
 \item{verbose}{verbose}
 
-\item{pureR}{should the PIRLS algorithm be run in
-\code{lme4pureR}?}
+\item{maxit}{maximum number of PIRLS iterations}
+
+\item{Lind}{optional indices mapping covariance parameters to the
+non-zero elements of the relative covariance factor}
 }
 \value{
 a deviance function with an environment

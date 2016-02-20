@@ -1,43 +1,32 @@
 library(lme4ord)
+library(multitable)
 library(lme4)
 library(ape)
 
-td <- simTestPhyloDat(9, n = 10, m = 100, power = 0.1)
+nSites <- 10
+nSpec <- 100
+form <- y ~ x * z +
+    (z | sites) + 
+    edge(1     | species, phy = phy) +
+    edge(0 + x | species, phy = phy)
+dataList <- dims_to_vars(data.list(y = 1 * (matrix(rnorm(nSites * nSpec), nSites, nSpec) > 0),
+                                   x = rnorm(nSites),
+                                   z = rnorm(nSpec),
+                                   dimids = c("sites", "species")))
+phy <- compute.brlen(rtree(n = nSpec), method = "Grafen", power = 0.8)
+phy$tip.label <- dimnames(dataList)$species
+dataFrame <- as.data.frame(dataList)
 
-edgeInd <- edgeTipIndicator(td$ph)
-dummy <- as.data.frame(t(edgeInd))
-td$dl <- td$dl + variableGroup(dummy, "species")
-edgeNms <- names(dummy)
-df <- as.data.frame(td$dl)
+parsedForm <- strucParseFormula(form, dataFrame, addArgs = list(phy = phy))
 
-image(as(tcrossprod(edgeInd), "sparseMatrix"))
-
-Z <- model.matrix(as.formula(paste("~ 0 + ", paste(edgeNms, collapse = " + "))), df)
-X <- model.matrix(~ 1, df)
-y <- model.response(model.frame(y ~ 1, df))
-n <- nrow(df)
-p <- ncol(X)
-q <- ncol(Z)
-mapToCovFact <- local({
-    q <- q
-    function(covar) rep(covar, q)
+beta <- rnorm(ncol(parsedForm$fixed))
+u <- rnorm(nrow(parsedForm$Lambdat))
+dataFrame$y <- with(parsedForm, {
+    fe <- as.numeric(fixed %*% beta)
+    re <- as.numeric(t(Lambdat * Zt) %*% u)
+    mu <- plogis(fe + re)
+    rbinom(nSites * nSpec, 1, mu)
 })
 
-dfun <- mkGeneralGlmerDevfun(y = y, X = X,
-                             Zt = as(t(Z), "sparseMatrix"),
-                             Lambdat = sparseMatrix(i = 1:q, j = 1:q, x = 1),
-                             weights = rep(1, n), offset = rep(0, n),
-                             initPars = c(1, 0),
-                             parInds = list(covar = 1, fixef = 2),
-                             mapToCovFact = mapToCovFact,
-                             mapToModMat = NULL)
-
-opt <- optim(c(1, 0), dfun, lower = c(0, -Inf), method = "L-BFGS-B")
-dfun(opt$par)
-opt$par
-
-rho <- environment(dfun)
-with(rho$pp, image(crossprod(Lambdat %*% Zt)[1:50, 1:50]))
-
-plot(td$ph)
-edgelabels(round(rho$pp$b(1), 2), cex = 0.6)
+(gm <- strucGlmer(form, dataFrame, binomial, list(phy = phy)))
+beta

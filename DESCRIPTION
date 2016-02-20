@@ -1,18 +1,30 @@
 Package: lme4ord
 Type: Package
-Title: What the package does (short line)
-Version: 0.0-0
-Date: 2014-06-27
+Title: Generalized Linear Mixed Models with Flexible (Co)Variance Structures
+Version: 0.0-3
+Date: 2015-07-25
 Author: Steve Walker
 Maintainer: Steve Walker <steve.walker@utoronto.ca>
-Description: More about what it does (maybe more than one line)
+Description: Generalized linear mixed models with
+    flexible (co)variance structures. The package
+    was written to solve applied problems in biology
+    and ecology, but should be more general than that.
 License: GPL-2
 Roxygen: list(wrap = FALSE)
 Depends:
-    lme4,
-    lme4pureR,
-    multitable,
-    ape,
-    reshape2
+    lme4
 Imports:
-    Matrix
+    stats,
+    Matrix,
+    methods,
+    grid,
+    vegan,
+    ape,
+    reshape2,
+    MASS,
+    lattice,
+    nlme,
+    minqa
+Suggests:
+    multitable,
+    ggplot2
