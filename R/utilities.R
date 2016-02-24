@@ -337,7 +337,7 @@ nobs.strucGlmer <- function(object, ...) nrow(object$parsedForm$fixed)
 ##' @export
 nobs.strucParseFormula <- function(object, ...) nrow(object$fixed)
 
-##' @importFrom lme4 sigma
+##' @rawNamespace if(getRversion()>='3.3.0') importFrom(stats, sigma) else importFrom(lme4,sigma)
 ##' @rdname pars
 ##' @export
 sigma.reTrmStruct <- function(object, ...) return(NA)
