@@ -115,6 +115,7 @@ covar.strucParseFormula <- function(object, ...) {
 loads <- function(object, ...) UseMethod("loads")
 
 ##' @rdname pars
+##' @importFrom stats loadings
 ##' @export
 loads.default <- function(object, ...) loadings(object)
 
@@ -606,6 +607,7 @@ familySimFun.character <- function(object, ...) {
 ##' @export
 familySimFun.function <- function(object, ...) familySimFun(object())
 
+##' @importFrom stats rnorm
 ##' @rdname familySimFun
 ##' @export
 familySimFun.gaussianFamily <- function(object, ...) {
@@ -615,6 +617,7 @@ familySimFun.gaussianFamily <- function(object, ...) {
     }
 }
 
+##' @importFrom stats rbinom fitted
 ##' @rdname familySimFun
 ##' @export
 familySimFun.binomialFamily <- function(object, ...) {
@@ -623,6 +626,7 @@ familySimFun.binomialFamily <- function(object, ...) {
     }
 }
 
+##' @importFrom stats rpois
 ##' @rdname familySimFun
 ##' @export
 familySimFun.poissonFamily <- function(object, ...) {
@@ -639,6 +643,7 @@ familySimFun.poissonFamily <- function(object, ...) {
 ##        (see initial shot at gamma.shape.merMod below)
 
 ##' @rdname familySimFun
+##' @importFrom stats rgamma fitted
 ##' @export
 familySimFun.GammaFamily <- function(object, ...) {
     function(object, nsim, ftd=fitted(object)) {
@@ -1069,6 +1074,7 @@ simplifyFacList <- function(facList) {
     }
 }
 
+##' @importFrom stats setNames quantile
 .prt.resids <- function(resids, digits, title = "Scaled residuals:", ...) {
     cat(title,"\n")
     ## FIXME: need testing code
@@ -1095,6 +1101,7 @@ simplifyFacList <- function(facList) {
 	cat.f(" Subset:", deparse(cc))
     }
 
+##' @importFrom stats AIC BIC df.residual
 getLlikAIC <- function(object, cmp = object@devcomp$cmp) {
     llik <- logLik(object)   # returns NA for a REML fit - maybe change?
     AICstats <- {
@@ -1162,6 +1169,7 @@ getLlikAIC <- function(object, cmp = object@devcomp$cmp) {
 
 cat.f <- function(...) cat(..., fill = TRUE)
 
+##' @importFrom methods is
 famlink <- function(object, resp = object@resp) {
     if(is(resp, "glmResp"))
 	resp$family[c("family", "link")]

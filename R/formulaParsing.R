@@ -39,6 +39,7 @@
 ##' \item{devfunEnv}{Environment of the deviance function.}
 ##' \item{formula}{Model formula.}
 ##' @rdname strucParseFormula
+##' @importFrom stats model.response model.frame
 ##' @export
 strucParseFormula <- function(formula, data, addArgs = list(), reTrmsList = NULL,
                               parList = NULL, ...) {
@@ -172,6 +173,7 @@ model.matrix.strucParseFormula <- function(object, ...) object$fixed
 ##' @param weights \code{\link{weights}} for each observation
 ##' @param family \code{\link{family}} object
 ##' @rdname strucParseFormula
+##' @importFrom stats binomial
 ##' @export
 simulate.strucParseFormula <- function(object, nsim = 1, seed = NULL,
                                        weights = NULL,
@@ -261,6 +263,7 @@ update.strucParseFormula <- function(object, parList, ...) {
 ##' @param formula Generalized mixed model formula
 ##' @importFrom lme4 expandDoubleVerts
 ##' @importFrom lme4 nobars
+##' @importFrom stats as.formula
 ##' @rdname splitForm
 ##' @export
 splitForm <- function(formula) {
@@ -365,6 +368,8 @@ reForm <- function(splitFormula) {
 
 ##' @param term language object
 ##' @rdname splitForm
+##' @importFrom methods is
+##' @importFrom stats reformulate
 ##' @export
 noSpecials <- function(term) {
     nospec <- noSpecials_(term)

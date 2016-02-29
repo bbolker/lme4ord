@@ -40,6 +40,7 @@
 ##' non-zero elements of the relative covariance factor
 ##' @return a deviance function with an environment
 ##' @importFrom lme4 GHrule
+##' @importFrom utils is.relistable relist
 ##' @export
 mkGeneralGlmerDevfun <- function(y, X, Zt, Lambdat,
                                  weights = NULL, offset = NULL,

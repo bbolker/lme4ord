@@ -136,6 +136,7 @@ setOldClass("strucMatrix")
 ##' @param ... passed to subsequent functions
 ##' @rdname strucMatrix-class
 ##' @method print strucMatrix
+##' @importFrom utils head
 ##' @export
 print.strucMatrix <- function(x, n = 6L, ...) {
 
@@ -510,6 +511,7 @@ as.matrix.strucMatrixChol <- function(x, sparse = FALSE, ...) {
 }
 
 
+##' @importFrom methods new
 strucMatrix2gCsparse <- function(from) {
     ans <- new("dgCMatrix")
     ans@i <- as.integer(from$rowInds)
@@ -638,6 +640,7 @@ setIs("strucMatrixKron", "strucMatrix")
 
 ##' @rdname kron
 ##' @family matrixCombining
+##' @importFrom stats diffinv
 ##' @export
 ##' @examples
 ##' (krExample <- kr(X, Y))
@@ -685,6 +688,8 @@ setOldClass(c("strucMatrixKr", "strucMatrix"))
 setIs("strucMatrixKr", "strucMatrix")
 
 ##' @rdname kron
+##' @param FUN function to apply; may be a quoted string (currently ignored; fo r compatibility)
+##' @param make.dimnames currently ignored
 ##' @export
 setMethod("kronecker", signature(X = "strucMatrix", Y = "strucMatrix"), {
     function(X, Y, FUN = "*", make.dimnames = FALSE, ...) kron(X, Y)
@@ -701,6 +706,7 @@ setMethod("kronecker", signature(X = "strucMatrix", Y = "strucMatrix"), {
 ##' @note The \code{*} operator is matrix multiplication, not
 ##' element-wise multiplication.
 ##' @rdname Ops.strucMatrix
+##' @importFrom methods getGeneric
 ##' @export
 Ops.strucMatrix <- function(e1, e2) {
     FUN = .Generic
@@ -1938,6 +1944,7 @@ setIs("strucMatrixExpChol", "strucMatrix")
 ##'
 ##' @importFrom nlme Dim
 ##' @importFrom nlme "coef<-"
+##' @importFrom stats coef
 ##' @param object a \code{corStruct} object
 ##' @param sig initial standard deviation
 ##' @family strucMatrixSpecial

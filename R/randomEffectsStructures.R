@@ -636,7 +636,7 @@ packReTrm <- function(object, Zt, Lambdat,
 }
 
 ##' @export
-VarCorr.reTrmStruct <- function(x, sigma = 1, rdig = 3) {
+VarCorr.reTrmStruct <- function(x, sigma = 1, ...) {
     ## default method
     if(!is.null(templateBlock <- attr(x$Lambdat, "templateBlock"))) {
         ans <- update(templateBlock, getInit(x$Lambdat))
@@ -652,7 +652,8 @@ VarCorr.reTrmStruct <- function(x, sigma = 1, rdig = 3) {
 }
 
 ##' @export
-VarCorr.factAnal <- function(x, sigma = 1, rdig = 3) {
+##' @importFrom stats loadings
+VarCorr.factAnal <- function(x, sigma = 1, ...) {
     tcrossprod(loadings(scores(x)))
 }
 
@@ -804,6 +805,8 @@ simAddArgs.phyloEdge <- function(object, rtreeArgs = list(),
 ##' (the default) \code{findReTrmClasses} returns classes available
 ##' (on the search path).
 ##' @rdname setReTrm
+##' @importFrom utils methods
+##' @importFrom stats terms
 ##' @export
 findReTrmClasses <- function(formula = NULL) {
     if(is.null(formula)) {
@@ -864,6 +867,7 @@ ranef.reTrmStruct <- function(object, type = c("u", "Lu", "ZLu"), ...) {
 ##' @param ... not used (for consistency with generic in \code{vegan}
 ##' package)
 ##' @importFrom vegan scores
+##' @importFrom stats xtabs
 ##' @rdname setReTrm.factAnal
 ##' @export
 scores.factAnal <- function(x, ...) {

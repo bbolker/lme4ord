@@ -22,6 +22,10 @@ kr(X, Y, trans = "*")
 \item{makedimnames}{ignored}
 
 \item{...}{ignored}
+
+\item{FUN}{function to apply; may be a quoted string (currently ignored; fo r compatibility)}
+
+\item{make.dimnames}{currently ignored}
 }
 \description{
 Kronecker and Khatri-Rao products for structured sparse matrices

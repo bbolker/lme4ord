@@ -38,7 +38,7 @@ mkStrucGlmer(opt, parsedForm, dfun, mc)
 \method{vcov}{strucGlmer}(object, correlation = TRUE, use.hessian = TRUE,
   justFixef = TRUE, ...)
 
-\method{VarCorr}{strucGlmer}(x, sigma = 1, rdig = 3)
+\method{VarCorr}{strucGlmer}(x, sigma = 1, ...)
 
 \method{isREML}{strucGlmer}(x, ...)
 
@@ -84,7 +84,7 @@ be used (if \code{NULL} no terms are used)}
 
 \item{justFixef}{should matrices be over fixed effects only?}
 
-\item{sigma, rdig}{for consistency}
+\item{sigma}{for consistency}
 
 \item{nsim}{number of simulations}
 

@@ -95,10 +95,12 @@ print.strucGlmer <- function(x, digits = max(3, getOption("digits") - 3),  ...) 
     ## FIXME: optimizer warnings??
 }
 
+
 ##' @param use.hessian use numerical hessian in covariance
 ##' calculations if available
 ##' @rdname strucGlmer-class
 ##' @method summary strucGlmer
+##' @importFrom stats pnorm vcov
 ##' @export
 summary.strucGlmer <- function(object, use.hessian = TRUE, ...) {
     vc <- vcov(object, use.hessian = use.hessian)
@@ -133,6 +135,7 @@ summary.strucGlmer <- function(object, use.hessian = TRUE, ...) {
 ##' @param show.resids show residuals?
 ##' @rdname strucGlmer-class
 ##' @method print summary.strucGlmer
+##' @importFrom stats printCoefmat cov2cor
 ##' @export
 print.summary.strucGlmer <- function(x, digits = max(3, getOption("digits") - 3),
                                      correlation = NULL, 
@@ -195,6 +198,7 @@ print.summary.strucGlmer <- function(x, digits = max(3, getOption("digits") - 3)
 ## ----------------------------------------------------------------------
 
 ##' @rdname strucGlmer-class
+##' @importFrom stats residuals
 ##' @export
 residuals.strucGlmer <- function(object, ...) {
     r <- residuals(object$parsedForm$devfunEnv$resp, "deviance", ...)
@@ -291,11 +295,11 @@ vcov.strucGlmer <- function(object, correlation = TRUE,
     rr
 }
 
-##' @param sigma,rdig for consistency
+##' @param sigma for consistency
 ##' @importFrom nlme VarCorr
 ##' @rdname strucGlmer-class
 ##' @export
-VarCorr.strucGlmer <- function(x, sigma = 1, rdig = 3) {
+VarCorr.strucGlmer <- function(x, sigma = 1, ...) {
     lapply(x$parsedForm$random, VarCorr)
 }
 
@@ -411,6 +415,7 @@ simStrucParsedForm <- function(parsedForm, family = binomial,
 ##' @param forSummary print for \code{\link{summary}} instead of
 ##' \code{\link{print}}?
 ##' @param ... additional arguments
+##' @importFrom stats sd
 ##' @export
 printReTrm <- function(object, forSummary = FALSE, ...) {
     UseMethod("printReTrm")
