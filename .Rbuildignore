@@ -5,3 +5,5 @@ inst/githubIssues
 inst/notes
 inst/references
 inst/testdata
+pull_upstream
+man-roxygen/*
