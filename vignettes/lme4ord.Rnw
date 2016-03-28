@@ -1,0 +1,84 @@
+%\VignetteEngine{knitr::knitr}
+%\VignetteDepends{ggplot2}
+\documentclass{article}
+\title{{\tt lme4ord} vignette}
+\begin{document}
+
+<<pkgs,message=FALSE>>=
+library("lme4ord")
+library("nlme")
+library("mgcv")
+library("ggplot2"); theme_set(theme_bw())
+@
+
+<<>>=
+loon <- read.csv(system.file("extraData", "loon.csv", package = "lme4ord"))
+loon <- transform(loon,
+                  prop=round(lakes * (percent/100)) / lakes)
+ggplot(loon,aes(year,prop)) + geom_point(aes(size=lakes))+
+    geom_smooth(method="gam",
+                formula=y~s(x,k=20),
+                method.args=list(family="binomial"),
+                aes(weight=lakes))
+summary(m <- gam(prop ~ s(year,k=20), family=binomial, data=loon,
+                 weight=lakes))
+summary(m2 <- glm(prop ~ year, family=binomial, data=loon,
+                 weight=lakes))
+
+loon$resgam <- residuals(m)
+loon$resglm <- residuals(m2)
+plot(ACF(gls(resgam~1,loon)),alpha=0.05)
+plot(ACF(gls(resglm~1,loon)),alpha=0.05)
+@
+
+But let's try anyway ...
+<<>>=
+corObj <- nlme:::Initialize(nlme:::corAR1(0, form = ~ year), loon)
+pform <- strucGlmer(prop ~ scale(year) +
+                        nlmeCorStruct(1, corObj = corObj, sig = 1),
+                    loon, numModularSteps = 1)
+
+## set up deviance function: *n.b. MODIFIES environment of pform!*
+## in particular the family argument gets set
+dfun <- strucMkDevfun(pform, family = binomial, weights = loon$lakes)
+pform$devfunEnv$resp$family
+dfun(pars(pform))  ## 325.6939
+if (FALSE) {
+    dfun <- strucMkDevfun(pform, family = gaussian, weights = loon$lakes)
+    dfun(pars(pform))
+    pform$devfunEnv$resp$family
+    pform$devfunEnv$resp$weights
+}
+
+## (why) do we need 'weights' again?
+## if we use family here would we need it above?
+## *should* this work?
+## strucGlmer(pform)
+(gm <- strucGlmer(pform, weights=loon$lakes))
+## (gm0 <- strucGlmer(pform)) ## probably fills in weights=1
+## FIXME! understand what's going on here
+
+
+image(cc <- crossprod(relCovFact(gm)))
+plot(cc[1,]/cc[1,1])
+
+## how do we retrieve parameters from gm?
+p <- pars(gm)[2]
+gg <- gm$parsedForm$random[[1]]
+coef(environment(gg$Lambdat$trans)$object,unconstrained=TRUE)
+
+
+ctrans <- function(p) (exp(p)-1)/(exp(p)+1)  ## dug out from nlme:::coef.corAR1
+
+
+## what's the relationship between what's in 'pars' and
+## what's hidden in the corStruct object??
+
+
+plot(plogis(fitted(gm)), loon$prop,type="b")
+abline(a = 0, b = 1)
+sigma(gm)
+sigma(pform)
+@ 
+
+\end{document}
