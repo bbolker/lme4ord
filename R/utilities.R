@@ -23,12 +23,12 @@
 ##' used to get the best of both worlds, by constructing a list of
 ##' indices for extracting various types of parameters from a
 ##' parameter vector.
-##' 
+##'
 ##' The \code{\link{lme4ord}} package keeps track of parameters using
 ##' a simple named list of parameter vectors. The names correspond to
 ##' different types of parameters, described in the following list:
 ##' \describe{
-##' 
+##'
 ##' \item{\code{covar}}{Parameters determining the transposed relative
 ##' covariance factor, \code{Lambdat}.}
 ##'
@@ -46,7 +46,7 @@
 ##'
 ##' @return A list with the same names as \code{parList} with the
 ##' indices for each type of parameter.
-##' 
+##'
 ##' @param parList named list of parameters with possible names (see
 ##' details): (\code{covar}, \code{fixef}, \code{loads}, \code{weigh})
 ##' @export
@@ -385,7 +385,7 @@ sigma.strucGlmer <- function(object, ...) {
 ##' values themselves, only the initial values. Use the
 ##' \code{\link{update.strucMatrix}} methods to actually update the
 ##' values to the initial values.
-##' 
+##'
 ##' @param x object
 ##' @param ... not yet used
 ##' @rdname getInit
@@ -547,7 +547,7 @@ parLength.strucGlmer <- function(object, ...) parLength(object$parsedForm)
 factors <- function(x, ...) x$factors
 
 ## ----------------------------------------------------------------------
-## Phylogenetic 
+## Phylogenetic
 
 ##' Standardize covariance matrix to determinant one
 ##'
@@ -635,7 +635,8 @@ familySimFun.poissonFamily <- function(object, ...) {
         ## do not have a simple unambiguous interpretation:
         ## they might be frequency weights or indicate averages.
         if (any(wts != 1)) warning("ignoring prior weights")
-        rpois(nsim*length(ftd), ftd)
+        if (missing(nsim)) nsim <- length(ftd)
+        rpois(nsim, ftd)
     }
 }
 
@@ -893,7 +894,7 @@ denseUpperInds <- function(n) {
 ##' history.  \code{reorderPhylo} is a convenience function for
 ##' ordering the edges of a \code{phylo} object in a way that makes it
 ##' easier to build edge-based phylogenetic models.
-##' 
+##'
 ##' @param node vector of node indices
 ##' @param edge phylogenetic edge matrix
 ##' @param path vector giving the path from a node back in time
@@ -1021,7 +1022,7 @@ covExpDecay <- function(matPars, minCov = 1e-3, distCutoff = 2, nPoints = 100) {
 ##----------------------------------------------------------------------
 
 ##' Orthogonal procrustean rotation matrix
-##' 
+##'
 ##' @param X input matrix
 ##' @param Z target matrix
 ##' @return the rotation matrix
@@ -1292,7 +1293,7 @@ namedList <- function(...) {
 }
 
 devCritFun <- function(object, REML = NULL) {
-    # silence no visible global function definition 
+    # silence no visible global function definition
     ## cf. (1) lmerResp::Laplace in respModule.cpp
     ##     (2) section 5.6 of lMMwR, listing lines 34-42
     if (isTRUE(REML) && !lme4::isLMM(object))
