@@ -11,6 +11,10 @@ library("mgcv")
 library("ggplot2"); theme_set(theme_bw())
 @
 
+\section{Loon example}
+
+These data are taken from 
+
 <<>>=
 loon <- read.csv(system.file("extraData", "loon.csv", package = "lme4ord"))
 loon <- transform(loon,

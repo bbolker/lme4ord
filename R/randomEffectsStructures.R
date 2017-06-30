@@ -46,7 +46,14 @@ mkReTrmStructs <- function(splitFormula, data) {
     }
     reTrmsList <- lapply(splitFormula$reTrmFormulas,
                          getModMatAndGrpFac, fr = data)
-    names(reTrmsList) <- paste(sapply(reTrmsList, "[[", "grpName"),
+    grpNames <- sapply(reTrmsList, "[[", "grpName")
+    if (any(is.na(grpNames))) {
+        if (length(grpNames)>1) {
+            stop("need to do some extra hacking in mkReTrmStructs ...")
+        }
+        grpNames <- "resids"
+    }
+    names(reTrmsList) <- paste(grpNames,
                                splitFormula$reTrmClasses, sep = ".")
     nUnStr <- sum(splitFormula$reTrmClasses == "unstruc")
     for(i in seq_along(reTrmsList)) {
@@ -573,7 +580,7 @@ setReTrm.obslev <- function(object, addArgsList,
 ##' @export
 ##' @template setReTrm
 ##' @templateVar cls nlmeCorStruct
-##' @templateVar form \code{nlmeCorStruct(1, corObj)} or \code{nlmeCorStruct(1 | grpFac, corObj)}
+##' @templateVar form \code{nlmeCorStruct(1, corObj)} (for structured residuals) or \code{nlmeCorStruct(1 | grpFac, corObj)} (to structure a random effect term)
 ##' @templateVar arg c("corObj", "sig")
 ##' @templateVar desc c("corStruct object", "initial standard deviation")
 ##' @templateVar covarDesc "parameters for the correlation structure"
@@ -587,7 +594,8 @@ setReTrm.nlmeCorStruct <- function(object, addArgsList,
 
     modMat <- object$modMat
     if(is.na(object$grpFac[[1]])) {
-        grpFac <- as.factor(1:nrow(modMat))
+        ## per-observation (residuals)
+        grpFac <- as.factor(seq_len(nrow(modMat)))
     } else {
         grpFac <- object$grpFac
     }
